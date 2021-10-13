@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct Location {
+struct Location: Identifiable, Equatable {
+    let id = UUID()
+    let title: String
     let latitude: Double
     let longitude: Double
 }

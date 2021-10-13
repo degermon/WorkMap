@@ -12,6 +12,7 @@ struct ContentView: View {
     // MARK: - PROPERTIES
     
     @EnvironmentObject var contentViewModel: ContentViewModel
+    @State var menuOpen: Bool = false
     
     // MARK: - BODY
     
@@ -22,22 +23,44 @@ struct ContentView: View {
                 .accentColor(Color(.systemRed))
                 .onAppear {
                     contentViewModel.checkIfLocationServicesIsEnabled()
-                }
+                } //: ONAPPEAR
             
-            HStack {
+            HStack { // HSTACK with both buttons for list and current location
+                if !self.menuOpen { // show list of locations to to display
+                    Button(action: {
+                        self.openMenu()
+                    }, label: {
+                        Image(systemName: "list.bullet")
+                    })
+                        .frame(width: 60, height: 60)
+                        .foregroundColor(.white)
+                        .background(Color(.systemBlue))
+                        .cornerRadius(30)
+                }
+                
                 Spacer()
+                
                 Button(action: {
                     contentViewModel.showCurrentLocation()
                 }, label: {
                     Image(systemName: "location.fill")
                 })
-                .frame(width: 60, height: 60)
-                .foregroundColor(.white)
-                .background(Color(.systemBlue))
-                .cornerRadius(30)
-            }
+                    .frame(width: 60, height: 60)
+                    .foregroundColor(.white)
+                    .background(Color(.systemBlue))
+                    .cornerRadius(30)
+            } //: HSTACK
             .padding()
+            
+            SideMenu(width: 270,
+                     isOpen: self.menuOpen,
+                     menuClose: self.openMenu)
+                .ignoresSafeArea()
         } //: ZSTACK
+    } //: BODY
+    
+    func openMenu() {
+        self.menuOpen.toggle()
     }
 }
 

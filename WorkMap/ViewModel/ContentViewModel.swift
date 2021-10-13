@@ -20,8 +20,12 @@ final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
     // MARK: - PROPERTIES
     
     @Published var region = MKCoordinateRegion(center: MapDetails.startingLocation,
-                                               span: MapDetails.defaultSpan)
-    
+                                               span: MapDetails.defaultSpan) // currently displayed region
+    @Published var locationsList = [
+        Location(title: "Test Location 1", latitude: 54.711575, longitude: 25.261518),
+        Location(title: "Test Location 2", latitude: 54.714981, longitude: 25.277554),
+        Location(title: "Test Location 3", latitude: 54.668977, longitude: 25.237766),
+        Location(title: "Test Location 4", latitude: 54.643023, longitude: 25.279469)]
     var locationManager: CLLocationManager?
     
     // MARK: - FUNCTIONS
@@ -30,6 +34,13 @@ final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         guard let locationManager = locationManager else { return }
         guard let coordinate = locationManager.location?.coordinate else { return }
         region = MKCoordinateRegion(center: coordinate,
+                                    span: MapDetails.defaultSpan)
+    }
+    
+    func showLocation(_ location: Location) {
+        region = MKCoordinateRegion(center: CLLocationCoordinate2D(
+            latitude: location.latitude,
+            longitude: location.longitude),
                                     span: MapDetails.defaultSpan)
     }
     
