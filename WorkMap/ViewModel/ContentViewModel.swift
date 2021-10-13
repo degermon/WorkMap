@@ -5,22 +5,33 @@
 //  Created by Daniel Šuškevič on 2021-10-13.
 //
 
-import Foundation
 import MapKit
+
+enum MapDetails {
+    static let startingLocation = CLLocationCoordinate2D(
+        latitude: 54.711575,
+        longitude: 25.261518)
+    static let defaultSpan = MKCoordinateSpan(
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005)
+}
 
 final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     // MARK: - PROPERTIES
     
-    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(
-        latitude: 54.73029277914454,
-        longitude: 25.269726488523315),
-    span: MKCoordinateSpan(
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005))
+    @Published var region = MKCoordinateRegion(center: MapDetails.startingLocation,
+                                               span: MapDetails.defaultSpan)
     
     var locationManager: CLLocationManager?
     
     // MARK: - FUNCTIONS
+    
+    func showCurrentLocation() {
+        guard let locationManager = locationManager else { return }
+        guard let coordinate = locationManager.location?.coordinate else { return }
+        region = MKCoordinateRegion(center: coordinate,
+                                    span: MapDetails.defaultSpan)
+    }
     
     func checkIfLocationServicesIsEnabled() {
         if CLLocationManager.locationServicesEnabled() {
@@ -42,11 +53,7 @@ final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
         case .denied:
             print("You have denied this app location services, please enable it in settings.")
         case .authorizedAlways, .authorizedWhenInUse:
-            guard let coordinate = locationManager.location?.coordinate else { break }
-            region = MKCoordinateRegion(center: coordinate,
-                                        span: MKCoordinateSpan(
-                latitudeDelta: 0.005,
-                longitudeDelta: 0.005))
+            break
         @unknown default:
             break
         }
@@ -54,16 +61,5 @@ final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         checkLocationAuthorization()
-    }
-    
-    private func transformCoordinatesToCoordinateRegion(coordinates: Location) -> MKCoordinateRegion {
-        let region = MKCoordinateRegion(center: CLLocationCoordinate2D(
-            latitude: coordinates.latitude,
-            longitude: coordinates.longitude),
-        span: MKCoordinateSpan(
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005))
-                                        
-        return region
     }
 }

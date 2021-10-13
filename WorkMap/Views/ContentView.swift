@@ -16,12 +16,28 @@ struct ContentView: View {
     // MARK: - BODY
     
     var body: some View {
-        Map(coordinateRegion: $contentViewModel.region, showsUserLocation: true)
-            .ignoresSafeArea()
-            .accentColor(Color(.systemRed))
-            .onAppear {
-                contentViewModel.checkIfLocationServicesIsEnabled()
+        ZStack(alignment: .bottom) {
+            Map(coordinateRegion: $contentViewModel.region, showsUserLocation: true)
+                .ignoresSafeArea()
+                .accentColor(Color(.systemRed))
+                .onAppear {
+                    contentViewModel.checkIfLocationServicesIsEnabled()
+                }
+            
+            HStack {
+                Spacer()
+                Button(action: {
+                    contentViewModel.showCurrentLocation()
+                }, label: {
+                    Image(systemName: "location.fill")
+                })
+                .frame(width: 60, height: 60)
+                .foregroundColor(.white)
+                .background(Color(.systemBlue))
+                .cornerRadius(30)
             }
+            .padding()
+        } //: ZSTACK
     }
 }
 
